@@ -1,5 +1,6 @@
 import React from 'react'
 import Vitrine from './components/Vitrine'
+import PainelVendedor from './components/PainelVendedor'
 
 function App() {
   return (
@@ -7,6 +8,8 @@ function App() {
       <div style={{ textAlign: 'center', padding: '10px 0', borderBottom: '1px solid #333', marginBottom: '20px' }}>
         <h1 style={{ fontSize: '20px', margin: '0', color: '#00adb5' }}>Conecta Itajaí 🚀</h1>
       </div>
+      <PainelVendedor />
+      <hr style={{ borderColor: '#333', margin: '40px 0' }} />
       <Vitrine />
     </div>
   )
