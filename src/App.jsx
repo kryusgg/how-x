@@ -1,12 +1,13 @@
 import React from 'react'
+import Vitrine from './components/Vitrine'
 
 function App() {
   return (
-    <div style={{ padding: '40px', fontFamily: 'Arial, sans-serif', textAlign: 'center', color: '#fff', backgroundColor: '#242424', minHeight: '100vh' }}>
-      <h1>Conecta Itajaí 🚀</h1>
-      <p>Vitrine Digital para Microempreendedores Locais</p>
-      <hr style={{ borderColor: '#555', margin: '20px 0' }} />
-      <p style={{ color: '#aaa' }}>Etapa 2 - Desenvolvimento do MVP</p>
+    <div style={{ backgroundColor: '#1e1e1e', minHeight: '100vh', padding: '20px 0', color: '#fff' }}>
+      <div style={{ textAlign: 'center', padding: '10px 0', borderBottom: '1px solid #333', marginBottom: '20px' }}>
+        <h1 style={{ fontSize: '20px', margin: '0', color: '#00adb5' }}>Conecta Itajaí 🚀</h1>
+      </div>
+      <Vitrine />
     </div>
   )
 }
