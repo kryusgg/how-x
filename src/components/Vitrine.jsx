@@ -6,7 +6,7 @@ const PRODUTOS_MOCK = [
     nome: 'Bolo de Pote Brigadeiro',
     preco: 12.00,
     descricao: 'Camadas de bolo de chocolate com recheio cremoso de brigadeiro artesanal.',
-    imagem: 'https://images.unsplash.com/photo-1535141192574-5d4897c13636?w=400'
+    imagem: 'https://voquerobolo.com.br/wp-content/uploads/2021/04/Bolo-de-Pote-Brigadeiro.jpg'
   },
   {
     id: 2,
@@ -20,12 +20,12 @@ const PRODUTOS_MOCK = [
     nome: 'Cento de Docinhos Festa',
     preco: 90.00,
     descricao: 'Cento misto com brigadeiro tradicional, beijinho e dois amores.',
-    imagem: 'https://images.unsplash.com/photo-1541783245831-57d6fb0926d3?w=400'
+    imagem: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFnA5RkTdiwP6xe2Mrcf43umKAvJxXZ4s2yAIeUG73FZzylsx2IPd3mAtO&s=10'
   }
 ]
 
 function Vitrine() {
-  const numeroWhatsApp = '5547999999999'
+  const numeroWhatsApp = '554799927094'
 
   const enviarPedido = (produto) => {
     const mensagem = `Olá! Gostaria de fazer um pedido através do Conecta Itajaí:\n\n*Produto:* ${produto.nome}\n*Valor:* R$ ${produto.preco.toFixed(2).replace('.', ',')}\n\nPor favor, me informe a chave Pix para pagamento e a estimativa de entrega!`
