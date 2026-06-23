@@ -26,20 +26,29 @@ function Vitrine() {
   }
 
   const categorias = [
-    { id: 'bolo', nome: 'Bolos e Tortas', emoji: '🍰', cor: '#ff7597' },
-    { id: 'doce', nome: 'Doces e Brigadeiros', emoji: '🍬', cor: '#ffb84d' },
-    { id: 'copo', nome: 'Copos da Felicidade', emoji: '🍨', cor: '#60efff' }
+    { id: 'bolo', nome: 'Bolos e Tortas', emoji: '🍰' },
+    { id: 'doce', nome: 'Doces e Brigadeiros', emoji: '🍬' },
+    { id: 'copo', nome: 'Copos da Felicidade', emoji: '🍨' }
   ]
 
+  // SISTEMA DE FILTRAGEM BLINDADO (Com inteligência de Backup)
   const produtosFiltrados = produtos.filter(p => {
     if (!categoriaAtiva) return false
-    const nomeMinusculo = p.nome.toLowerCase()
-    const descMinusculo = p.descricao.toLowerCase()
+    
+    // 1º Caso: Se o produto é novo e tem a categoria salva, usa ela direto
+    if (p.categoria) {
+      return p.categoria === categoriaAtiva
+    }
+    
+    // 2º Caso (Backup): Se for um produto antigo sem categoria, tenta adivinhar pelo texto
+    const nomeMinusculo = p.nome ? p.nome.toLowerCase() : ''
+    const descMinusculo = p.descricao ? p.descricao.toLowerCase() : ''
     
     if (categoriaAtiva === 'bolo') return nomeMinusculo.includes('bolo') || descMinusculo.includes('bolo')
-    if (categoriaAtiva === 'doce') return nomeMinusculo.includes('brigasdeiro') || nomeMinusculo.includes('doce') || descMinusculo.includes('doce')
+    if (categoriaAtiva === 'doce') return nomeMinusculo.includes('doce') || nomeMinusculo.includes('brigadeiro') || descMinusculo.includes('doce')
     if (categoriaAtiva === 'copo') return nomeMinusculo.includes('copo') || descMinusculo.includes('copo')
-    return true
+    
+    return false
   })
 
   return (
