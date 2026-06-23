@@ -4,15 +4,15 @@ import { collection, addDoc, onSnapshot, doc, deleteDoc, query, where } from 'fi
 
 function PainelVendedor({ emailLogado }) {
   const [nome, setNome] = useState('')
-  const [preco, setPreco] = useState('')
+  const [preco, setPreco] = useState('') // ← Agora armazena o texto formatado (ex: "15,00")
   const [descricao, setDescricao] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
+  const [categoria, setCategoria] = useState('bolo')
   const [imagemFile, setImagemFile] = useState(null)
   const [previewUrl, setPreviewUrl] = useState('')
   const [produtos, setProdutos] = useState([])
   const [carregando, setCarregando] = useState(false)
 
-  // BUSCA FILTRADA: Só traz os produtos onde o emailVendedor é igual ao emailLogado
   useEffect(() => {
     const q = query(collection(db, 'produtos'), where('emailVendedor', '==', emailLogado))
     
@@ -26,6 +26,28 @@ function PainelVendedor({ emailLogado }) {
     return () => unsubscribe()
   }, [emailLogado])
 
+  // FUNÇÃO MÁSCARA: Formata o preço em tempo real enquanto o usuário digita
+  const handlePrecoChange = (e) => {
+    let valor = e.target.value
+    
+    // Remove tudo que não for número puro
+    valor = valor.replace(/\D/g, '')
+
+    if (valor === '') {
+      setPreco('')
+      return
+    }
+
+    // Transforma os números em centavos e aplica a formatação brasileira (R$)
+    const valorNum = parseFloat(valor) / 100
+    const valorFormatado = valorNum.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })
+
+    setPreco(valorFormatado)
+  }
+
   const handleTrocarImagem = (e) => {
     const arquivo = e.target.files[0]
     if (arquivo) {
@@ -37,7 +59,7 @@ function PainelVendedor({ emailLogado }) {
   const handleCadastrar = async (e) => {
     e.preventDefault()
     if (!imagemFile) {
-      alert('Por favor, selecione uma imagem para o product.')
+      alert('Por favor, selecione uma imagem para o produto.')
       return
     }
 
@@ -58,20 +80,24 @@ function PainelVendedor({ emailLogado }) {
       const numeroLimpo = whatsapp.replace(/\D/g, '')
       const numeroCompleto = numeroLimpo.startsWith('55') ? numeroLimpo : `55${numeroLimpo}`
 
-      // SALVAMENTO COM ETIQUETA: Gravamos o emailVendedor junto com o doce
+      // CONVERSÃO REVERSA: Remove os pontos e troca a vírgula por ponto para o Firebase salvar como número real
+      const precoLimpo = parseFloat(preco.replace(/\./g, '').replace(',', '.'))
+
       await addDoc(collection(db, 'produtos'), {
         nome,
-        preco: parseFloat(preco),
+        preco: precoLimpo, // ← Salva como número decimal perfeito no Firestore
         descricao,
         whatsapp: numeroCompleto,
         imagem: urlGerada,
-        emailVendedor: emailLogado
+        emailVendedor: emailLogado,
+        categoria: categoria
       })
 
       setNome('')
       setPreco('')
       setDescricao('')
       setWhatsapp('')
+      setCategoria('bolo')
       setImagemFile(null)
       setPreviewUrl('')
       alert('Produto cadastrado com sucesso! 🎉')
@@ -118,9 +144,19 @@ function PainelVendedor({ emailLogado }) {
             <input type="text" value={nome} onChange={(e) => setNome(e.target.value)} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #444', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none' }} placeholder="Ex: Bolo de Pote de Morango" />
           </div>
 
+          {/* CAMPO DE PREÇO ATUALIZADO PARA COMPORTAR A MÁSCARA AUTOMÁTICA */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
             <label style={{ color: '#aaa', fontSize: '13px' }}>Preço (R$)</label>
-            <input type="number" step="0.01" value={preco} onChange={(e) => setPreco(e.target.value)} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #444', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none' }} placeholder="0.00" />
+            <input type="text" inputMode="numeric" value={preco} onChange={handlePrecoChange} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #444', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none' }} placeholder="0,00" />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            <label style={{ color: '#aaa', fontSize: '13px' }}>Categoria na Vitrine</label>
+            <select value={categoria} onChange={(e) => setCategoria(e.target.value)} required style={{ padding: '10px', borderRadius: '8px', border: '1px solid #444', backgroundColor: '#1a1a1a', color: '#fff', outline: 'none', cursor: 'pointer' }}>
+              <option value="bolo">🍰 Bolos e Tortas</option>
+              <option value="doce">🍬 Doces e Brigadeiros</option>
+              <option value="copo">🍨 Copos da Felicidade</option>
+            </select>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
